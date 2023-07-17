@@ -1,0 +1,92 @@
+﻿@model HarzRollerz.MVC.ViewModels.Collections.CollectionDetailsViewModel
+
+@{
+	ViewData["Title"] = "Collection Details";
+}
+
+<div class="container col-@(Model.IsEvaluated ? 12 : 6) mx-auto mt-4">
+	<div class="row">
+		<h3 class="col">Collection Details</h3>
+		<div class="col-auto my-auto">
+			<a asp-controller="Competitions" asp-action="Details" asp-route-id="@Model.Competition.ID">Back to Competition</a>
+		</div>
+	</div>
+	<hr />
+	<table class="table table-borderless">
+		<tr>
+			<th>Competition</th>
+			<td>@Model.Competition.String</td>
+		</tr>
+		<tr>
+			<th>Owner</th>
+			<td>@Model.Owner.String</td>
+		</tr>
+		<tr>
+			<th>Is Evaluated</th>
+			<td>
+				<input type="checkbox" @(Model.IsEvaluated ? "checked" : "") class="form-check" disabled />
+			</td>
+		</tr>
+		@if (Model.IsEvaluated)
+		{
+			<tr>
+				<th>Total Positive Points</th>
+				<td>@Model.TotalPositivePoints</td>
+			</tr>
+			<tr>
+				<th>Total Negative Points</th>
+				<td>@Model.TotalNegativePoints</td>
+			</tr>
+			<tr>
+				<th>Total Points</th>
+				<td>@Model.TotalPoints</td>
+			</tr>
+			<tr>
+				<th>Total Score</th>
+				<td>@Model.TotalScore%</td>
+			</tr>
+			<tr>
+				<th>Rank</th>
+				<td>#@Model.Rank</td>
+			</tr>
+		}
+	</table>
+	<table class="table table-hover text-center mt-4">
+		<thead>
+			<tr>
+				<th>Cage Number</th>
+				<th>Ring Number</th>
+				@if (Model.IsEvaluated)
+				{
+					<th>Total Positive Points</th>
+					<th>Total Negative Points</th>
+					<th>Total Points</th>
+					<th>Total Score</th>
+					<th>Rank in Competition</th>
+				}
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var cage in Model.Cages)
+			{
+				<tr>
+					<td>@cage.Number</td>
+					<td>@cage.RingNumber</td>
+					@if (Model.IsEvaluated)
+					{
+						<td>@cage.TotalPositivePoints</td>
+						<td>@cage.TotalNegativePoints</td>
+						<td>@cage.TotalPoints</td>
+						<td>@cage.TotalScore%</td>
+						<td>#@cage.Rank</td>
+					}
+					<td>
+						<a asp-controller="Canaries" asp-action="Details" asp-route-id="@cage.CanaryID">Details</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+
+	</table>
+</div>

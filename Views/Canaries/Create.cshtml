@@ -1,0 +1,58 @@
+﻿@model HarzRollerz.MVC.Models.Entities.Canary
+
+@{
+    ViewData["Title"] = "Register Canary";
+}
+
+<div class="container col-lg-10 col-xl-8 mx-auto mt-4">
+    <h2>Register Canary for @Model.Owner.String</h2>
+    <hr />
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="ID" type="hidden" />
+        <h4 class="mt-4">Ring Number <small>(required)</small></h4>
+        <table class="table table-borderless text-center mt-3">
+            <tr>
+                <th></th>
+                <th>Owner's Signature</th>
+                <th>Inner Ring Diameter</th>
+                <th>Ordinal Number</th>
+            </tr>
+            <tr class="border">
+                <td width="20%" class="border">
+                    <input value="HR" class="form-control text-center" disabled />
+                </td>
+                <td class="border">
+                    <input value="@Model.Owner.Signature" class="form-control text-center" disabled />
+                    <input asp-for="OwnerID" type="hidden" />
+                </td>
+                <td class="border">
+                    <input asp-for="InnerRingDiameter" type="number" step="0.1" min="0.0" max="5.0" placeholder="2,5" class="form-control text-center ps-4" 
+                           onchange="this.value = parseFloat(this.value).toFixed(1)" />
+                </td>
+                <td width="25%" class="border">
+                    <input value="@Model.OrdinalNumberString" class="form-control text-center" disabled />
+                    <input asp-for="OrdinalNumber" hidden />
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="3">
+                    <span asp-validation-for="InnerRingDiameter" class="text-danger ms-5"></span>
+                </td>
+            </tr>
+        </table>
+        <h5 class="mt-4">Name <small>(optional)</small></h5>
+        <input asp-for="Name" class="form-control mt-3" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+        <div class="mt-4 text-end">
+            <a asp-controller="Breeders" asp-action="Details" asp-route-id="@Model.OwnerID" class="me-3">Back to Owner's Profile</a> |
+            <input type="submit" value="Create" class="btn btn-primary align-baseline ms-3" />
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

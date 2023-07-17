@@ -1,0 +1,223 @@
+﻿@model HarzRollerz.MVC.ViewModels.EvaluationCard.EvaluationCardViewModel
+@inject HarzRollerz.MVC.Services.ScoresService scores_service
+
+@{
+	ViewData["Title"] = "Evaluation Card";
+}
+
+<div class="container border p-5">
+	<div class="container text-center mb-5">
+		<h2>Evaluation Card</h2>
+		<h3>Herz Roller</h3>
+	</div>
+	<form method="post">
+		<input asp-for="CompetitionID" hidden />
+		<input asp-for="CollectionID" hidden />
+		<div class="row mb-3">
+			<label asp-for="Competition.Name" class="col-auto col-form-label">
+				Competition:
+			</label>
+			<div class="col">
+				<input asp-for="Competition.Name" class="col form-control" disabled />
+			</div>
+			<label asp-for="Competition.Rank" class="col-auto col-form-label">
+				Rank:
+			</label>
+			<div class="col-auto" style="width: 32ch;">
+				<input asp-for="Competition.Rank" class="col-3 form-control" disabled />
+			</div>
+		</div>
+		<div class="row mb-3">
+			<label asp-for="Competition.Place" class="col-auto col-form-label">
+				Place:
+			</label>
+			<div class="col">
+				<input asp-for="Competition.Place" class="form-control" disabled />
+			</div>
+			<label asp-for="Competition.Date" class="col-auto col-form-label">
+				Date:
+			</label>
+			<div class="col-auto">
+				<input asp-for="Competition.Date" class="form-control text-center" style="width: 16ch;" disabled />
+			</div>
+		</div>
+		<div class="row mb-3">
+			<label class="col-auto col-form-label">
+				Collection's Owner:
+			</label>
+			<div class="col">
+				<input value="@Model.Collection?.Owner.FirstLastName" class="form-control" disabled />
+			</div>
+			<label class="col-auto col-form-label">
+				Signature:
+			</label>
+			<div class="col-auto">
+				<input value="@Model.Collection?.Owner.Signature" class="form-control" style="width: 14ch;" disabled />
+			</div>
+		</div>
+		<table class="table table-bordered text-center">
+			<tr class="align-middle">
+				<th style="height: 4em;">
+					<label>Canary's Ring Number</label>
+				</th>
+				@for (int number = 1; number <= Model.Competition.CollectionSize; ++number)
+				{
+					<td>
+						@{
+							var canary = Model.Collection?.Cages?.Where(c => c.Number == number).First().Canary;
+							<input asp-for="@canary.RingNumber" class="form-control text-center mx-auto px-0" style="width: auto;" disabled />
+						}
+					</td>
+				}
+			</tr>
+			<tr class="align-middle">
+				<th style="height: 4em">
+					<label>Cage Number</label>
+				</th>
+				@for (int number = 1; number <= Model.Competition.CollectionSize; ++number)
+				{
+					<td>@number</td>
+				}
+			</tr>
+			<tr class="text-center align-middle">
+				<th colspan="@(Model.Competition.CollectionSize + 1)" style="height: 4em">Positive Singing Features</th>
+			</tr>
+			@foreach (var feature in Model.Competition.EvaluatedFeatures.Where(ef => ef.IsPositive()))
+			{
+				<tr class="align-middle">
+					<td>
+						<div class="container row">
+							<div class="col text-start">
+								@feature.SingingFeature.Name
+							</div>
+							<div class="col-auto text-end pe-0">
+								max. @feature.MaxPoints points
+							</div>
+						</div>
+					</td>
+					@for (int number = 1; number <= Model.Competition.CollectionSize; ++number)
+					{
+						var cage = Model.Collection?.Cages.Where(c => c.Number == number).FirstOrDefault();
+						var score = Model.Scores.Where(s => (s.CageID == cage?.ID) && (s.EvaluatedFeatureID == feature.ID)).FirstOrDefault();
+						int index = Model.Scores.ToList().IndexOf(score);
+						<td>
+							<input asp-for="Scores[index].EvaluatedFeatureID" hidden />
+							<input asp-for="Scores[index].CageID" hidden />
+							@{
+								if (Model.Scores[index].ID == null)
+								{
+									<input asp-for="Scores[index].Points" type="text" style="width: 12ch;" class="form-control text-center mx-auto @((Model.Scores[index].Points != null) && !scores_service.IsScoreValid(feature.ID, (int)Model.Scores[index].Points!) ? "text-danger alert-danger border-danger" : "")">
+									<span asp-validation-for="Scores[index].Points" class="text-danger" />
+								}
+								else
+								{
+									<input asp-for="Scores[index].Points" type="text" style="width: 12ch;" class="form-control text-center mx-auto" disabled>
+								}
+								
+							}
+						</td>
+					}
+				</tr>
+			}
+			<tr>
+				<td class="container align-middle fw-bold" style="height: 3.5em;">
+					<div class="container row">
+						<div class="col text-start">
+							Total Positive Points
+						</div>
+						<div class="col-auto text-end pe-0">
+							max. @scores_service.GetCageMaxPositivePoints(Model.CompetitionID) points
+						</div>
+					</div>
+				</td>
+				@foreach (var cage in Model.Collection.Cages.OrderBy(c => c.Number))
+				{
+					<td>
+						<input value="@scores_service.GetCageTotalPositiveScore(cage.ID)" type="text" style="width: 12ch;" class="form-control text-center mx-auto" disabled />
+					</td>
+				}
+			</tr>
+			<tr class="text-center align-middle">
+				<th colspan="@(Model.Competition.CollectionSize + 1)" style="height: 4em">Negative Singing Features</th>
+			</tr>
+			@foreach (var feature in Model.Competition.EvaluatedFeatures.Where(ef => ef.IsNegative()))
+			{
+				<tr class="align-middle">
+					<td>
+						<div class="container row">
+							<div class="col text-start">
+								@feature.SingingFeature.Name
+							</div>
+							<div class="col-auto text-end pe-0">
+								max. @feature.MaxPoints points
+							</div>
+						</div>
+					</td>
+					@for (int number = 1; number <= Model.Competition.CollectionSize; ++number)
+					{
+						var cage = Model.Collection?.Cages.Where(c => c.Number == number).FirstOrDefault();
+						var score = Model.Scores.Where(s => (s.CageID == cage?.ID) && (s.EvaluatedFeatureID == feature.ID)).FirstOrDefault();
+						int index = Model.Scores.ToList().IndexOf(score);
+						<td>
+							<input asp-for="@Model.Scores[index].EvaluatedFeatureID" hidden />
+							<input asp-for="@Model.Scores[index].CageID" hidden />
+							@{
+								if (Model.Scores[index].ID == null)
+								{
+									<input asp-for="@Model.Scores[index].Points" type="text" style="width: 12ch;" class="form-control text-center mx-auto @((Model.Scores[index].Points != null) && !scores_service.IsScoreValid(feature.ID, (int)Model.Scores[index].Points!) ? "text-danger alert-danger border-danger" : "")">
+								}
+								else
+								{
+									<input asp-for="@Model.Scores[index].Points" type="text" style="width: 12ch;" class="form-control text-center mx-auto" disabled>
+								}
+
+							}
+						</td>
+					}
+				</tr>
+			}
+			<tr>
+				<td class="container align-middle fw-bold" style="height: 3.5em;">
+					<div class="container row">
+						<div class="col text-start">
+							Total Negative Points
+						</div>
+						<div class="col-auto text-end pe-0">
+							max. @scores_service.GetCageMaxNegativePoints(Model.CompetitionID) points
+						</div>
+					</div>
+				</td>
+				@foreach (var cage in Model.Collection.Cages.OrderBy(c => c.Number))
+				{
+					<td>
+						<input value="@scores_service.GetCageTotalNegativeScore(cage.ID)" type="text" style="width: 12ch;" class="form-control text-center mx-auto" disabled />
+					</td>
+				}
+			</tr>
+			<tr class="text-center align-middle">
+				<th colspan="@(Model.Competition.CollectionSize + 1)" style="height: 4.5em">Overall Score</th>
+			</tr>
+			<tr class="align-middle">
+				<td class="align-middle">
+					<div class="container row py-3">
+						<p class="col text-start my-2">
+							Collection's Score: 
+						</p>
+						<div class="col-auto mt-3">
+							<input value="@scores_service.GetCollectionTotalScore(Model.CollectionID)" type="text" style="width: 12ch;" class="form-control text-center mx-auto" disabled />
+						</div>
+						<div class="col-auto mt-3 pe-0">
+							<input type="submit" value="Save" class="btn btn-primary" @(scores_service.CollectionHasScores(Model.CollectionID) ? "disabled" : "") />
+						</div>
+					</div>
+				</td>
+				@foreach (var cage in Model.Collection?.Cages.OrderBy(c => c.Number))
+				{
+					<td>
+						<input type="text" value="@scores_service.GetCageTotalScore(cage.ID)" style="width: 12ch;" class="form-control text-center mx-auto" disabled />
+					</td>
+				}
+			</tr>
+		</table>
+	</form>
+</div>

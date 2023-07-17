@@ -1,0 +1,63 @@
+﻿@model HarzRollerz.MVC.ViewModels.Breeders.BreederDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.String;
+}
+
+<div class="container mt-5 border w-75">
+    <div class="row p-3 bg-light">
+        <h2 class="col pt-2 px-4">Breeder's Profile</h2>
+        <div class="col-auto mx-3 my-auto">
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+    <div class="row px-3 py-5">
+        <div class="col-auto">
+            <div class="mx-3 bg-dark bg-opacity-50" style="width: 200px; height:200px;"></div>
+        </div>
+        <div class="col ms-3">
+            <h3>@Model?.FirstName @Model?.LastName (@Model?.Signature)</h3>
+            <h6 class="mt-3">Member since: @Model?.RegistrationDate.ToShortDateString()</h6>
+            <h6 class="mt-4">
+                Best Breeder's Collection rank:
+                @(Model?.BestCollectionRank != null ? $"#{Model?.BestCollectionRank}" : "-")
+            </h6>
+            <h6 class="mt-2">
+                Best Breeder's Canary rank:
+                @(Model?.BestCanaryRank != null ? $"#{Model?.BestCanaryRank}" : "-")
+            </h6>
+        </div>
+    </div>
+    <div class="row px-5 py-4 bg-light">
+        <div class="row mb-3 align-items-center">
+            <h3 class="col">Breeder's Canaries</h3>
+            <a asp-controller="Canaries" asp-action="Create" asp-route-ownerID="@Model?.ID" class="col-auto text-end pe-0">
+                Register Canary
+            </a>
+        </div>
+        
+        <table class="table table-hover text-center">
+            <thead>
+                <tr>
+                    <th width="15%" class="text-center">No</th>
+                    <th width="25%" class="ps-3">Name</th>
+                    <th width="40%">Ring Number</th>
+                    <th width="20%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var canary in Model.Canaries)
+                {
+                    <tr>
+                        <td class="text-center">@canary.OrdinalNumber</td>
+                        <td class="ps-3">@canary.Name</td>
+                        <td>@canary.RingNumber</td>
+                        <td>
+                            <a asp-controller="Canaries" asp-action="Details" asp-route-id="@canary.ID">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

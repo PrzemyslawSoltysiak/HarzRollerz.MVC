@@ -1,0 +1,146 @@
+﻿@model HarzRollerz.MVC.ViewModels.Competitions.CompetitionDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container mx-auto mt-4">
+    <div class="row">
+        <h3 class="col">Competition Details</h3>
+        <div class="col-auto my-auto">
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+    <hr />
+    <div class="row mb-5">
+        <div class="col-12 mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control bg-light" disabled />
+        </div>
+        <div class="col-4">
+            <label asp-for="Place" class="form-label"></label>
+            <input asp-for="Place" class="form-control bg-light" disabled />
+        </div>
+        <div class="col-3">
+            <label asp-for="Date" class="form-label"></label>
+            <input asp-for="Date" type="date" class="form-control bg-light" disabled />
+        </div>
+        <div class="col-3">
+            <label asp-for="Rank" class="form-label"></label>
+            <input asp-for="Rank" class="form-control bg-light" disabled />
+        </div>
+        <div class="col-2">
+            <label asp-for="CollectionSize" class="form-label"></label>
+            <input asp-for="CollectionSize" type="text" class="form-control text-center bg-light" disabled />
+        </div>
+    </div>
+    <div class="accordion" id="accordion_features_collections">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_features">
+                    Evaluated Singing Features
+                </button>
+            </h2>
+            <div id="collapse_features" class="accordion-collapse collapse show" data-bs-parent="accordion_features_collections">
+                <div class="accordion-body">
+                    <table class="table table-hover">
+                        <thead class="text-center">
+                            <tr>
+                                <th width="50%">Name</th>
+                                <th>Max Points</th>
+                                <th>Best Score</th>
+                                <th width="10%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var feature in Model.EvaluatedFeatures)
+                            {
+                                <tr>
+                                    <td class="px-4">@feature.Name</td>
+                                    <td class="text-center">@(feature.Weight == HarzRollerz.MVC.Models.SingingFeatures.FeatureWeight.Positive ? "+" : "-")@feature.MaxPoints</td>
+                                    <td class="text-center">
+                                        @(feature.HasScores ? $"{feature.BestScore} ({feature.BestPercentageScore}%)" : "-")
+                                    </td>
+                                    <td class="text-center px-4">
+                                        <a asp-controller="SingingFeatures" asp-action="Details" asp-route-id="@feature.SingingFeatureID">Details</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_collections">
+                    Registered Collections
+                </button>
+            </h2>
+            <div id="collapse_collections" class="accordion-collapse collapse show" data-bs-parent="accordion_features_collections">
+                <div class="accordion-body">
+                    <table class="table table-hover text-center">
+                        <thead>
+                            <tr class="align-middle">
+                                <th>Rank</th>
+                                <th width="25%">Owner</th>
+                                <th>Canaries</th>
+                                <th width="10%">Canary's Score</th>
+                                <th width="10%">Collection's Score</th>
+                                <th width="20%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var collection in Model.RegisteredCollections.OrderBy(c => c.Rank))
+                            {
+                                <tr class="align-middle">
+                                    <td>
+                                        @(collection.HasScores ? $"#{collection.Rank}" : "-")
+                                    </td>
+                                    <td class="text-start px-4">
+                                        <h6>@collection.OwnerFirstLastName</h6>
+                                        Signature: @collection.OwnerSignature
+                                    </td>
+                                    <td class="p-0">
+                                        <table class="table table-hover table-borderless m-0">
+                                            @foreach (var cage in collection.Cages.OrderBy(c => c.Number))
+                                            {
+                                                <tr>
+                                                    <td width="15%" class="text-end pe-0">
+                                                        @cage.Number.
+                                                    </td>
+                                                    <td>
+                                                        @cage.RingNumber
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </td>
+                                    <td class="p-0">
+                                        <table class="table table-hover table-borderless m-0">
+                                            @foreach (var cage in collection.Cages.OrderBy(c => c.Number))
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @(cage.HasScores ? $"{cage.TotalScore} ({cage.TotalPercentageScore}%)" : "-")
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </td>
+                                    <td>
+                                        @(collection.HasScores ? $"{collection.TotalScore} ({collection.TotalPercentageScore}%)" : "-")
+                                    </td>
+                                    <td>
+                                        <a asp-controller="EvaluationCard" asp-action="Index" asp-route-competitionID="@Model.ID" asp-route-collectionID="@collection.ID">Evaluation Card</a> |
+                                        <a asp-controller="Collections" asp-action="Details" asp-route-id="@collection.ID">Details</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

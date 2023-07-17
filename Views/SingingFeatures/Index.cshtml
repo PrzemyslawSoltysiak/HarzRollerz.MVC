@@ -1,0 +1,52 @@
+﻿@model HarzRollerz.MVC.ViewModels.SingingFeatures.SingingFeaturesViewModel
+
+@{
+    ViewData["Title"] = "Singing Features";
+}
+
+<h2>Singing Features</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-hover">
+    <thead>
+        <tr class="text-center">
+            <th width="35%">
+                @Html.DisplayNameFor(model => model.SingingFeatures[0].Name)
+            </th>
+            <th width="15%">
+                @Html.DisplayNameFor(model => model.SingingFeatures[0].Weight)
+            </th>
+            <th width="20%">
+                Default Max Points
+            </th>
+            <th width="15%">
+                Best Score
+            </th>
+            <th width="15%"></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.SingingFeatures) {
+        <tr>
+            <td class="ps-5 pe-4">
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.Weight)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.DefaultMaxPoints)
+            </td>
+            <td class="text-center">
+                @(item.BestPercentageScore != null ? item.BestPercentageScore.ToString() + '%' : '-')
+            </td>
+            <td class="text-center">
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

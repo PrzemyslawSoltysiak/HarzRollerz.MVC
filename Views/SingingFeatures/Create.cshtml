@@ -1,0 +1,45 @@
+﻿@model HarzRollerz.MVC.Models.SingingFeatures.SingingFeature
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container col-lg-10 col-xl-8 mx-auto mt-4">
+    <h2>Create Singing Feature</h2>
+    <hr />
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col form-group">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="col-auto form-group">
+                <label asp-for="DefaultMaxPoints" class="form-label"></label>
+                <input asp-for="DefaultMaxPoints" class="form-control" />
+                <span asp-validation-for="DefaultMaxPoints" class="text-danger"></span>
+            </div>
+            <div class="col-2 form-group">
+                <label asp-for="Weight" class="form-label"></label>
+                <select asp-for="Weight" class="form-select">
+                    <option>Positive</option>
+                    <option>Negative</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group mt-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" rows="4" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group mt-4 text-end">
+            <a asp-action="Index" class="me-3">Back to List</a> |
+            <input type="submit" value="Create" class="btn btn-primary align-baseline ms-3" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

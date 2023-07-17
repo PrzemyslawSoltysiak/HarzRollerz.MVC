@@ -1,0 +1,111 @@
+﻿@model HarzRollerz.MVC.ViewModels.Competitions.CreateCompetitionViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container col-xl-10 mx-auto mt-4">
+    <h2>Create Competition</h2>
+    <hr />
+    <form asp-action="Create" class="row">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group col-12 mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group col-3">
+            <label asp-for="Place" class="form-label"></label>
+            <input asp-for="Place" class="form-control" />
+            <span asp-validation-for="Place" class="text-danger"></span>
+        </div>
+        <div class="form-group col-3">
+            <label asp-for="Date" class="form-label"></label>
+            <input asp-for="Date" type="date" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+        <div class="form-group col-3">
+            <label asp-for="Rank" class="form-label"></label>
+            <input asp-for="Rank" class="form-control" />
+            <span asp-validation-for="Rank" class="text-danger"></span>
+        </div>
+        <dov class="form-group col-3">
+            <label asp-for="CollectionSize" class="form-label"></label>
+            <input asp-for="CollectionSize" class="form-control" />
+            <span asp-validation-for="CollectionSize" class="text-danger"></span>
+        </dov>
+        @*<hr class="mt-5" />*@
+        <div class="row mt-5 align-items-center">
+            <h3 class="col">Evaluated Singing Features</h3>
+            <a asp-controller="SingingFeatures" asp-action="Create" class="col-auto text-end pe-0">
+                Add new Singing Feature
+            </a>
+        </div>
+        <table class="table table-hover table-bordered text-center align-middle mt-3">
+            <thead>
+                <tr style="height: 3em;" class="align-middle">
+                    <th width="15%">Evaluate</th>
+                    <th>Singing Feature</th>
+                    <th>Weight</th>
+                    <th width="20%">Max Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int index = 0; index < Model.FeaturesToEvaluate.Length; ++index)
+                {
+                    <tr>
+                        <input asp-for="@Model.FeaturesToEvaluate[index].SingingFeatureID" hidden />
+                        <td class="text-center">
+                            <input asp-for="@Model.FeaturesToEvaluate[index].IsSelected" class="mx-auto form-check-input" onchange="onFeatureToEvaluateCheckboxClick(this, @index)" />
+                        </td>
+                        <td class="text-start ps-5">
+                            @Model.FeaturesToEvaluate[index].SingingFeatureName
+                        </td>
+                        <td>
+                            @Model.FeaturesToEvaluate[index].SingingFeatureWeight
+                        </td>
+                        <td class="px-5">
+                            <input asp-for="@Model.FeaturesToEvaluate[index].MaxPoints" type="text" class="form-control text-center" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @*<hr class="my-5" />
+        <div class="row mx-auto px-5">
+            <label asp-for="Competition.CollectionSize" class="col-auto col-form-label">
+                <h4>Collection's Size</h4>
+            </label>
+            <div class="col ms-4 ps-5 mt-1">
+                <input asp-for="Competition.CollectionSize" type="range" min="1" max="4" list="markers" class="" style="width: 400px;" />
+                <datalist id="markers" style="display: flex; justify-content: space-between; width: 400px;">
+                    @for (int size = 1; size <= 4; ++size)
+                    {
+                        <option value="@size" label="@size"></option>
+                    }
+                </datalist>
+            </div>
+            <span asp-validation-for="Competition.CollectionSize" class="text-danger"></span>
+        </div>*@
+        <div class="form-group my-4 text-end">
+            <a asp-action="Index" class="me-3">Back to List</a> |
+            <input type="submit" value="Create" class="btn btn-primary align-baseline ms-3" />
+            
+        </div>
+    </form>
+</div>
+
+<script>
+    function onFeatureToEvaluateCheckboxClick(element, index) {
+        const points = document.getElementsByName("FeaturesToEvaluate[" + index + "].MaxPoints")[0];
+        if (element.checked == true) {
+            points.disabled = false;
+        } else {
+            points.disabled = true;
+        }
+    }
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

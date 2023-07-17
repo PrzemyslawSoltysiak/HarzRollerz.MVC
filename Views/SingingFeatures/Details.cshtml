@@ -1,0 +1,34 @@
+﻿@model HarzRollerz.MVC.Models.SingingFeatures.SingingFeature
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container col-lg-10 col-xl-8 mx-auto mt-4">
+    <h2>Singing Feature Details</h2>
+    <hr />
+    <div class="row">
+        <div class="col">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control bg-light" disabled />
+        </div>
+        <div class="col-auto">
+            <label asp-for="DefaultMaxPoints" class="form-label"></label>
+            <input asp-for="DefaultMaxPoints" class="form-control bg-light" disabled />
+        </div>
+        <div class="col-2">
+            <label asp-for="Weight" class="form-label"></label>
+            <select asp-for="Weight" class="form-select bg-light" disabled>
+                <option>Positive</option>
+                <option>Negative</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" rows="4" class="form-control bg-light" disabled></textarea>
+    </div>
+    <div class="form-group mt-4 text-end">
+        <a asp-action="Index" class="me-3">Back to List</a>
+    </div>
+</div>

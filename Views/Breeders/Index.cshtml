@@ -1,0 +1,45 @@
+﻿@model IEnumerable<HarzRollerz.MVC.Models.Entities.Breeder>
+
+@{
+    ViewData["Title"] = "Breeders";
+}
+
+<h2>Breeders</h2>
+
+<p>
+    <a asp-action="Create">Register Breeder</a>
+</p>
+<table class="table table-hover text-center">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Signature)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.OrderBy(b => b.Signature)) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Signature)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.ID">View Profile</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
